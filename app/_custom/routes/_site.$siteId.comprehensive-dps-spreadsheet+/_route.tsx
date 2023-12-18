@@ -219,11 +219,9 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
          }}
          className=" p-6 rounded-lg shadow-lg"
       >
+         <div className="text-lg font-semibold mb-4">Enemy Information</div>
          <div className="grid grid-cols-3 gap-6">
             <div>
-               <div className="text-lg font-semibold mb-4">
-                  Enemy Information
-               </div>
                <div className="mb-4">
                   <label
                      className="block text-sm font-medium mb-1"
