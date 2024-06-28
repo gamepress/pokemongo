@@ -1,9 +1,11 @@
 import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
+   json,
    Link,
    useLoaderData,
    useSearchParams,
@@ -11,6 +13,7 @@ import {
 } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
+import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc.js";
 import {
@@ -20,12 +23,26 @@ import {
    weathers,
    pokeTypes,
 } from "./dataFactory.js";
+import { getMoves } from "./getData";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 const cache = { key: "", value: undefined };
 
-export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
+export async function loader({
+   request,
+   context: { payload },
+}: LoaderFunctionArgs) {
+   // get the moves table
+   const moves = await getMoves();
+
+   return json({ moves });
+}
+
+export async function clientLoader({
+   request,
+   serverLoader,
+}: ClientLoaderFunctionArgs) {
    // get query params from url
    const url = new URL(request.url);
 
@@ -64,7 +81,9 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
-   return { pokemon, results: filtered, count: filtered?.length };
+   const server = await serverLoader<typeof loader>();
+
+   return { pokemon, results: filtered, count: filtered?.length, server };
 }
 
 clientLoader.hyrate = true;
