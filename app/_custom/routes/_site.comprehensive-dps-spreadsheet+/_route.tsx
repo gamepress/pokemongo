@@ -4,6 +4,7 @@ import { Combobox } from "@headlessui/react";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
+   json,
    Link,
    useLoaderData,
    useSearchParams,
@@ -11,6 +12,7 @@ import {
 } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
+import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc.js";
 import {
@@ -24,6 +26,17 @@ import {
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 const cache = { key: "", value: undefined };
+
+// export async function loader({ request }: LoaderFunctionArgs) {
+//    const moves = fetchWithCache(
+//       "http://localhost:4000/api/moves?limit=0&depth=0",
+//    );
+//    const pokemons = fetchWithCache(
+//       "http://localhost:4000/api/pokemon?limit=0&depth=0",
+//    );
+
+//    return json({ moves, pokemons });
+// }
 
 export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    // get query params from url
@@ -485,7 +498,7 @@ function ResultsTable() {
 
    const filtered = results
       //limit results to the top 100
-      .slice(start, end);
+      ?.slice(start, end);
 
    return (
       <>
@@ -506,7 +519,7 @@ function ResultsTable() {
                </tr>
             </thead>
             <tbody>
-               {filtered.map((pokemon, index) => (
+               {filtered?.map((pokemon, index) => (
                   <tr key={index} className="group">
                      <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
                         {pokemon?.label}
