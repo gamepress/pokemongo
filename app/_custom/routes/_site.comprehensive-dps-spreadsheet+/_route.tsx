@@ -83,7 +83,7 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    return { pokemon, results: filtered, count: filtered?.length };
 }
 
-clientLoader.hyrate = true;
+clientLoader.hydrate = true;
 
 export function HydrateFallback() {
    return (
