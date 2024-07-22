@@ -41,6 +41,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //to-do add user pokemon
    const pokemon = Data.Pokemon;
 
+   console.log(Data);
+
    //create a simple in-memory cache
    function cacheResult() {
       //toggle move data for pvp mode
