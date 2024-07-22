@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
@@ -27,16 +28,16 @@ export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 const cache = { key: "", value: undefined };
 
-// export async function loader({ request }: LoaderFunctionArgs) {
-//    const moves = fetchWithCache(
-//       "http://localhost:4000/api/moves?limit=0&depth=0",
-//    );
-//    const pokemons = fetchWithCache(
-//       "http://localhost:4000/api/pokemon?limit=0&depth=0",
-//    );
+export async function loader({ request }: LoaderFunctionArgs) {
+   const moves = fetchWithCache(
+      "http://localhost:4000/api/moves?limit=0&depth=0",
+   );
+   const pokemons = fetchWithCache(
+      "http://localhost:4000/api/pokemon?limit=0&depth=0",
+   );
 
-//    return json({ moves, pokemons });
-// }
+   return json({ moves, pokemons });
+}
 
 export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    // get query params from url
