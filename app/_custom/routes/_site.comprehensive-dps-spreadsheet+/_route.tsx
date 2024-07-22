@@ -29,17 +29,22 @@ export { ErrorBoundary } from "~/components/ErrorBoundary";
 const cache = { key: "", value: undefined };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-   const moves = fetchWithCache(
+   const moves = await fetchWithCache(
       "http://localhost:4000/api/moves?limit=0&depth=0",
    );
-   const pokemons = fetchWithCache(
+   const pokemons = await fetchWithCache(
       "http://localhost:4000/api/pokemon?limit=0&depth=0",
    );
 
    return json({ moves, pokemons });
 }
 
-export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
+export async function clientLoader({
+   request,
+   serverLoader,
+}: ClientLoaderFunctionArgs) {
+   const { moves, pokemons } = await serverLoader<typeof loader>();
+
    // get query params from url
    const url = new URL(request.url);
 
@@ -80,7 +85,14 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
-   return { pokemon, results: filtered, count: filtered?.length };
+   return {
+      pokemon,
+      results: filtered,
+      count: filtered?.length,
+      Data,
+      moves,
+      pokemons,
+   };
 }
 
 clientLoader.hydrate = true;
@@ -96,7 +108,9 @@ export function HydrateFallback() {
 }
 
 export function ComprehensiveDpsSpreadsheet() {
-   const { pokemon, count } = useLoaderData<typeof clientLoader>();
+   const { pokemon, count, moves } = useLoaderData<typeof clientLoader>();
+
+   console.log({ moves });
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
