@@ -23,6 +23,7 @@ import {
    weathers,
    pokeTypes,
 } from "./dataFactory.js";
+import { parseMoves } from "./parseMoves.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -90,7 +91,7 @@ export async function clientLoader({
       results: filtered,
       count: filtered?.length,
       Data,
-      moves,
+      moves: parseMoves(moves),
       pokemons,
    };
 }

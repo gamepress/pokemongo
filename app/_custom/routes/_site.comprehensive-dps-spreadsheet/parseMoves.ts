@@ -1,5 +1,9 @@
 import type { Move } from "~/db/payload-custom-types";
 
+export function parseMoves(moves: any) {
+   return moves?.docs?.map((move: Move) => parseMove(move));
+}
+
 export function parseMove(move: Move) {
    let pokeType = move.type as any as keyof typeof moveTypeIcons; //ugly but it works
 
@@ -9,7 +13,20 @@ export function parseMove(move: Move) {
       icon = `https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_${moveTypeIcons[pokeType]}.svg`,
       moveType = move.category;
 
-   let power, dws, duration, energyDelta;
+   let power = 0,
+      dws = 0,
+      duration = 1,
+      energyDelta = 0;
+
+   if (move.pve) {
+      if (move.pve.power) power = move.pve.power;
+      if (move.pve.damageWindowStart) dws = move.pve.damageWindowStart * 1000;
+      if (move.pve.duration) duration = move.pve.duration * 1000;
+      if (moveType === "fast" && move.pve.energyDeltaCharge)
+         energyDelta = parseInt(move.pve.energyDeltaCharge);
+      if (moveType === "charge" && move.pvp?.energyDeltaCharge)
+         energyDelta = move.pvp?.energyDeltaCharge;
+   }
 
    let regular = {},
       combat = {};
