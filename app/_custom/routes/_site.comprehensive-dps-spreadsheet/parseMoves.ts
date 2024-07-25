@@ -46,9 +46,10 @@ export function parseMove(move: Move): PokeMove {
    let name = move.id,
       label = move.name ?? move.id,
       labelLinked = `<a href="/c/moves/${move.slug}" hreflang="en">${label}</a>`,
-      icon = `https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_${moveTypeIcons[pokeType]}.svg`,
+      icon = moveTypeIcons[pokeType],
       moveType = move.category;
 
+   // this is set elsewhere with GM.mode move[a] = "pvp" ? move.combat[a] : move.regular[a]
    let power = 0,
       dws = 0,
       duration = 0,
@@ -87,6 +88,12 @@ export function parseMove(move: Move): PokeMove {
       if (move.pvp.energyDeltaCharge)
          combat.energyDelta = move.pvp.energyDeltaCharge;
    }
+
+   // let's test this for now by assuming pve mode
+   power = regular.power;
+   dws = regular.dws;
+   duration = regular.duration;
+   energyDelta = regular.energyDelta;
 
    return {
       name,

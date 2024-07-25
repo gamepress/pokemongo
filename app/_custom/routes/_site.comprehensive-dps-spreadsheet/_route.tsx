@@ -86,12 +86,15 @@ export async function clientLoader({
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
+   const pokeMoves = parseMoves(moves);
+
    return {
       pokemon,
       results: filtered,
       count: filtered?.length,
       Data,
-      moves: parseMoves(moves),
+      FastMoves: pokeMoves.filter((move) => move.moveType === "fast"),
+      ChargedMoves: pokeMoves.filter((move) => move.moveType === "charge"),
       pokemons,
    };
 }
@@ -109,9 +112,7 @@ export function HydrateFallback() {
 }
 
 export function ComprehensiveDpsSpreadsheet() {
-   const { pokemon, count, moves } = useLoaderData<typeof clientLoader>();
-
-   console.log({ moves });
+   const { pokemon } = useLoaderData<typeof clientLoader>();
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
