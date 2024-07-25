@@ -37,7 +37,7 @@ export type PokeMove = {
       duration: number;
       energyDelta: number;
    };
-   moveType: "fast" | "charge";
+   moveType: "fast" | "charged";
 };
 
 export function parseMove(move: Move): PokeMove {
@@ -47,7 +47,8 @@ export function parseMove(move: Move): PokeMove {
       label = move.name ?? move.id,
       labelLinked = `<a href="/c/moves/${move.slug}" hreflang="en">${label}</a>`,
       icon = moveTypeIcons[pokeType],
-      moveType = move.category;
+      moveType: "fast" | "charged" =
+         move.category === "fast" ? "fast" : "charged";
 
    // this is set elsewhere with GM.mode move[a] = "pvp" ? move.combat[a] : move.regular[a]
    let power = 0,
@@ -67,7 +68,7 @@ export function parseMove(move: Move): PokeMove {
       if (move.pve.duration) regular.duration = move.pve.duration * 1000;
       if (moveType === "fast" && move.pve.energyDeltaFast)
          regular.energyDelta = move.pve.energyDeltaFast;
-      if (moveType === "charge" && move.pve.energyDeltaCharge)
+      if (moveType === "charged" && move.pve.energyDeltaCharge)
          regular.energyDelta = -1 * parseInt(move.pve.energyDeltaCharge);
    }
 
@@ -81,7 +82,7 @@ export function parseMove(move: Move): PokeMove {
          combat.energyDelta = move.pvp.energyDeltaFast;
    }
 
-   if (move.pvp && moveType === "charge") {
+   if (move.pvp && moveType === "charged") {
       if (move.pvp.power) combat.power = move.pvp.power;
       combat.dws = 0;
       combat.duration = 0;
@@ -89,7 +90,7 @@ export function parseMove(move: Move): PokeMove {
          combat.energyDelta = move.pvp.energyDeltaCharge;
    }
 
-   // let's test this for now by assuming pve mode
+   // let's assume pve by default, this might need to be fixed later
    power = regular.power;
    dws = regular.dws;
    duration = regular.duration;
