@@ -44,7 +44,7 @@ export function parseMove(move: Move): PokeMove {
    let pokeType = move.type as any as keyof typeof moveTypeIcons; //ugly but it works
 
    let name = move.id,
-      label = move.name ?? move.id,
+      label = move.name ?? move.slug ?? move.id,
       labelLinked = `<a href="/c/moves/${move.slug}" hreflang="en">${label}</a>`,
       icon = moveTypeIcons[pokeType],
       moveType: "fast" | "charged" =
