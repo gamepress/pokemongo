@@ -1,35 +1,92 @@
 import type { Move } from "~/db/payload-custom-types";
 
-export function parseMoves(moves: any) {
-   return moves?.docs?.map((move: Move) => parseMove(move));
+export function parseMoves(moves: { docs: Move[] }): PokeMove[] {
+   return moves?.docs
+      ?.map((move: Move) => parseMove(move))
+      .sort((a: PokeMove, b: PokeMove) => (a.name > b.name ? 1 : -1));
 }
 
-export function parseMove(move: Move) {
+export type PokeMove = {
+   name: string;
+   pokeType: keyof typeof moveTypeIcons;
+   label: string;
+   labelLinked: string;
+   icon: string;
+   power: number;
+   dws: number;
+   duration: number;
+   energyDelta: number;
+   effect:
+      | string
+      | {
+           activation_chance: number;
+           self_attack_stage_delta: number;
+           self_defense_stage_delta: number;
+           target_attack_stage_delta: number;
+           target_defense_stage_delta: number;
+        };
+   regular: {
+      power: number;
+      dws: number;
+      duration: number;
+      energyDelta: number;
+   };
+   combat: {
+      power: number;
+      dws: number;
+      duration: number;
+      energyDelta: number;
+   };
+   moveType: "fast" | "charge";
+};
+
+export function parseMove(move: Move): PokeMove {
    let pokeType = move.type as any as keyof typeof moveTypeIcons; //ugly but it works
 
    let name = move.id,
-      label = move.name,
-      labelLinked = `<a href=\"/c/moves/${move.slug}\" hreflang=\"en\">${label}</a>`,
+      label = move.name ?? move.id,
+      labelLinked = `<a href="/c/moves/${move.slug}" hreflang="en">${label}</a>`,
       icon = `https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_${moveTypeIcons[pokeType]}.svg`,
       moveType = move.category;
 
    let power = 0,
       dws = 0,
-      duration = 1,
+      duration = 0,
       energyDelta = 0;
 
+   let effect = parseMoveEffect(move);
+
+   let regular = { power: 0, dws: 0, duration: 0, energyDelta: 0 },
+      combat = { power: 0, dws: 0, duration: 0, energyDelta: 0 };
+
    if (move.pve) {
-      if (move.pve.power) power = move.pve.power;
-      if (move.pve.damageWindowStart) dws = move.pve.damageWindowStart * 1000;
-      if (move.pve.duration) duration = move.pve.duration * 1000;
-      if (moveType === "fast" && move.pve.energyDeltaCharge)
-         energyDelta = parseInt(move.pve.energyDeltaCharge);
-      if (moveType === "charge" && move.pvp?.energyDeltaCharge)
-         energyDelta = move.pvp?.energyDeltaCharge;
+      if (move.pve.power) regular.power = move.pve.power;
+      if (move.pve.damageWindowStart)
+         regular.dws = move.pve.damageWindowStart * 1000;
+      if (move.pve.duration) regular.duration = move.pve.duration * 1000;
+      if (moveType === "fast" && move.pve.energyDeltaFast)
+         regular.energyDelta = move.pve.energyDeltaFast;
+      if (moveType === "charge" && move.pve.energyDeltaCharge)
+         regular.energyDelta = -1 * parseInt(move.pve.energyDeltaCharge);
    }
 
-   let regular = {},
-      combat = {};
+   if (move.pvp && moveType === "fast") {
+      if (move.pvp.power) combat.power = move.pvp.power;
+      combat.dws = 0;
+      combat.duration = move.pvp.secondDurationFast
+         ? move.pvp.secondDurationFast + 1
+         : 1;
+      if (move.pvp.energyDeltaFast)
+         combat.energyDelta = move.pvp.energyDeltaFast;
+   }
+
+   if (move.pvp && moveType === "charge") {
+      if (move.pvp.power) combat.power = move.pvp.power;
+      combat.dws = 0;
+      combat.duration = 0;
+      if (move.pvp.energyDeltaCharge)
+         combat.energyDelta = move.pvp.energyDeltaCharge;
+   }
 
    return {
       name,
@@ -41,38 +98,30 @@ export function parseMove(move: Move) {
       dws,
       duration,
       energyDelta,
+      effect,
       regular,
       combat,
       moveType,
    };
 }
 
-// return of parseMove should look like this:
-// {
-//     "name": "acid",
-//     "pokeType": "poison",
-//     "label": "Acid",
-//     "labelLinked": "<a href=\"/pokemongo/pokemon-move/acid\" hreflang=\"en\">Acid</a>",
-//     "icon": "/pokemongo/sites/pokemongo/files/icon_poison.png",
-//     "power": 9,
-//     "dws": 400,
-//     "duration": 800,
-//     "energyDelta": 8,
-//     "effect": "",
-//     "regular": {
-//       "power": 9,
-//       "dws": 400,
-//       "duration": 800,
-//       "energyDelta": 8
-//     },
-//     "combat": {
-//       "power": 6,
-//       "dws": 0,
-//       "duration": 2,
-//       "energyDelta": 5
-//     },
-//     "moveType": "fast"
-//   }
+function parseMoveEffect(move: Move) {
+   if (move.subject) {
+      let stage_delta = move.stageDelta ?? 0;
+      let subj_self = move.subject.includes("self");
+      let subj_targ = move.subject.includes("opponent");
+      let stat_atk = move.stat?.includes("atk");
+      let stat_def = move.stat?.includes("def");
+      return {
+         activation_chance: move.probability ?? 0,
+         self_attack_stage_delta: subj_self && stat_atk ? stage_delta : 0,
+         self_defense_stage_delta: subj_self && stat_def ? stage_delta : 0,
+         target_attack_stage_delta: subj_targ && stat_atk ? stage_delta : 0,
+         target_defense_stage_delta: subj_targ && stat_def ? stage_delta : 0,
+      };
+   }
+   return "";
+}
 
 // hardcode this because I'm lazy
 const moveTypeIcons = {

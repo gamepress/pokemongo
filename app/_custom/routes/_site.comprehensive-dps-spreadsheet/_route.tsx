@@ -23,7 +23,7 @@ import {
    weathers,
    pokeTypes,
 } from "./dataFactory.js";
-import { parseMoves } from "./parseMoves.js";
+import { parseMoves } from "./parseMoves";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
