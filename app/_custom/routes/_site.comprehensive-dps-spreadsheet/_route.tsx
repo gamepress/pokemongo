@@ -94,7 +94,7 @@ export async function clientLoader({
       count: filtered?.length,
       Data,
       FastMoves: pokeMoves.filter((move) => move.moveType === "fast"),
-      ChargedMoves: pokeMoves.filter((move) => move.moveType === "charge"),
+      ChargedMoves: pokeMoves.filter((move) => move.moveType === "charged"),
       pokemons,
    };
 }
