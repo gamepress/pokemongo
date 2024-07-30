@@ -75,8 +75,8 @@ export function parseMove(move: Move): PokeMove {
    if (move.pvp && moveType === "fast") {
       if (move.pvp.power) combat.power = move.pvp.power;
       combat.dws = 0;
-      combat.duration = move.pvp.secondDurationFast
-         ? move.pvp.secondDurationFast + 1
+      combat.duration = move.pvp.turnDurationFast
+         ? move.pvp.turnDurationFast + 1
          : 1;
       if (move.pvp.energyDeltaFast)
          combat.energyDelta = move.pvp.energyDeltaFast;
