@@ -3,33 +3,35 @@ import type { Pokemon } from "payload/generated-custom-types";
 export function parsePokemons(pokemons: { docs: Pokemon[] }) {
    return pokemons?.docs
       ?.map((pokemon: Pokemon) => parsePokemon(pokemon))
-      .sort((a: any, b: any) => (a.id > b.id ? 1 : -1));
+      .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
 }
 
 export function parsePokemon(pokemon: Pokemon) {
    let dex = pokemon.number,
       name = pokemon.name ?? pokemon.slug ?? pokemon.id,
-      pokeType1 = pokemon.type?.[0],
-      pokeType2 = pokemon.type?.[1],
+      pokeType1 = pokemon.type?.[0]?.id,
+      pokeType2 = pokemon.type?.[1]?.id,
       baseAtk = pokemon.baseAttack,
       baseDef = pokemon.baseDefense,
       baseStm = pokemon.baseStamina;
 
-   let fastMoves = pokemon.fastMoves?.map((move) => move.move),
-      chargeMoves = pokemon.chargeMoves?.map((move) => move.move),
-      fastMoves_legacy = [],
-      chargeMoves_legacy = [],
-      fastMove_exclusive = [],
-      chargeMoves_exclusive = [];
+   let fastMoves = pokemon.fastMoves?.map((move) => move?.move.id),
+      chargedMoves = pokemon.chargeMoves?.map((move) => move?.move.id),
+      fastMoves_legacy = [], //missing
+      chargedMoves_legacy = [], //missing
+      fastMoves_exclusive = [], //missing
+      chargedMoves_exclusive = []; //missing
 
-   let rating = pokemon.ratings?.attackerRating,
+   let rating = pokemon.ratings?.attackerRating
+         ? parseInt(pokemon.ratings?.attackerRating)
+         : 0,
       raidMarker = "",
-      nid,
-      icon,
+      nid, //missing
+      icon = pokemon?.icon?.url,
       label = name,
       labelLinked = `<a href="/c/pokemon/${pokemon.slug}" hreflang="en">${label}</a>`,
-      evolutions,
-      unavailable,
+      evolutions = [],
+      unavailable = "", //missing
       rarity = LegendaryPokemon.includes(name)
          ? "POKEMON_RARITY_LEGENDARY"
          : MythicalPokemon.includes(name)
@@ -45,11 +47,11 @@ export function parsePokemon(pokemon: Pokemon) {
       baseDef,
       baseStm,
       fastMoves,
-      chargeMoves,
+      chargedMoves,
       fastMoves_legacy,
-      chargeMoves_legacy,
-      fastMove_exclusive,
-      chargeMoves_exclusive,
+      chargedMoves_legacy,
+      fastMoves_exclusive,
+      chargedMoves_exclusive,
       rating,
       raidMarker,
       nid,

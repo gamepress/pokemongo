@@ -1,9 +1,9 @@
-import type { Move } from "~/db/payload-custom-types";
+import type { Move } from "payload/generated-custom-types";
 
 export function parseMoves(moves: { docs: Move[] }): PokeMove[] {
    return moves?.docs
       ?.map((move: Move) => parseMove(move))
-      .sort((a: any, b: any) => (a.id > b.id ? 1 : -1));
+      .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
 }
 
 export type PokeMove = {

@@ -35,7 +35,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       "http://localhost:4000/api/moves?limit=0&depth=0",
    );
    const pokemons = await fetchWithCache(
-      "http://localhost:4000/api/pokemon?limit=0&depth=0",
+      "http://localhost:4000/api/pokemon?limit=0&depth=1",
    );
 
    return json({ moves, pokemons });
