@@ -24,6 +24,7 @@ import {
    pokeTypes,
 } from "./dataFactory.js";
 import { parseMoves } from "./parseMoves";
+import { parsePokemons } from "./parsePokemons";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -88,8 +89,11 @@ export async function clientLoader({
 
    const pokeMoves = parseMoves(moves);
 
+   const pokemonv2 = parsePokemons(pokemons);
+
    return {
       pokemon,
+      pokemonv2,
       results: filtered,
       count: filtered?.length,
       Data,
