@@ -1,9 +1,11 @@
 import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
+   json,
    Link,
    useLoaderData,
    useSearchParams,
@@ -11,6 +13,7 @@ import {
 } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
+import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc.js";
 import {
@@ -20,12 +23,30 @@ import {
    weathers,
    pokeTypes,
 } from "./dataFactory.js";
+import { parseMoves } from "./parseMoves";
+import { parsePokemons } from "./parsePokemons";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 const cache = { key: "", value: undefined };
 
-export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
+   const moves = await fetchWithCache(
+      "http://localhost:4000/api/moves?limit=0&depth=0",
+   );
+   const pokemons = await fetchWithCache(
+      "http://localhost:4000/api/pokemon?limit=0&depth=1",
+   );
+
+   return json({ moves, pokemons });
+}
+
+export async function clientLoader({
+   request,
+   serverLoader,
+}: ClientLoaderFunctionArgs) {
+   const { moves, pokemons } = await serverLoader<typeof loader>();
+
    // get query params from url
    const url = new URL(request.url);
 
@@ -40,6 +61,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    //to-do add user pokemon
    const pokemon = Data.Pokemon;
+
+   console.log(Data);
 
    //create a simple in-memory cache
    function cacheResult() {
@@ -64,10 +87,23 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
-   return { pokemon, results: filtered, count: filtered?.length };
+   const pokeMoves = parseMoves(moves);
+
+   const pokemonv2 = parsePokemons(pokemons);
+
+   return {
+      pokemon,
+      pokemonv2,
+      results: filtered,
+      count: filtered?.length,
+      Data,
+      FastMoves: pokeMoves.filter((move) => move.moveType === "fast"),
+      ChargedMoves: pokeMoves.filter((move) => move.moveType === "charged"),
+      pokemons,
+   };
 }
 
-clientLoader.hyrate = true;
+clientLoader.hydrate = true;
 
 export function HydrateFallback() {
    return (
@@ -80,7 +116,7 @@ export function HydrateFallback() {
 }
 
 export function ComprehensiveDpsSpreadsheet() {
-   const { pokemon, count } = useLoaderData<typeof clientLoader>();
+   const { pokemon } = useLoaderData<typeof clientLoader>();
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
@@ -483,7 +519,7 @@ function ResultsTable() {
 
    const filtered = results
       //limit results to the top 100
-      .slice(start, end);
+      ?.slice(start, end);
 
    return (
       <>
@@ -504,7 +540,7 @@ function ResultsTable() {
                </tr>
             </thead>
             <tbody>
-               {filtered.map((pokemon, index) => (
+               {filtered?.map((pokemon, index) => (
                   <tr key={index} className="group">
                      <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
                         {pokemon?.label}
