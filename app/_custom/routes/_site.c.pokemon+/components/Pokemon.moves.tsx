@@ -4,11 +4,20 @@ import { Badge } from "~/components/Badge";
 import { H2Plain } from "~/components/Headers";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
-import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
+import type {
+   PokemonFamily,
+   Pokemon as PokemonType,
+} from "~/db/payload-custom-types";
 
 import { ChargeBar } from "./ChargeBar";
 
-export function Moves({ data: pokemon }: { data: PokemonType }) {
+export function Moves({
+   data,
+}: {
+   data: { pokemon: PokemonType; family: PokemonFamily };
+}) {
+   const pokemon = data.pokemon;
+
    return (
       <>
          <H2Plain text="Fast" className="!text-xl" />
@@ -41,7 +50,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                         <div className="flex items-center gap-3">
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="orange">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-16 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">CD</div>
                                     {row?.move?.pve?.duration}
                                  </Badge>
@@ -50,7 +62,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                            </Tooltip>
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="blue">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-20 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">DPS</div>
                                     {row?.move?.pve?.damagePerSecond}
                                  </Badge>
@@ -59,7 +74,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                            </Tooltip>
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="teal">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-20 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">EPS</div>
                                     {row?.move?.pve?.energyPerSecond}
                                  </Badge>
@@ -156,7 +174,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                         <div className="flex items-center gap-3">
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="orange">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-16 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">CD</div>
                                     {row?.move?.pve?.duration}
                                  </Badge>
@@ -165,7 +186,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                            </Tooltip>
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="blue">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-20 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">DPS</div>
                                     {row?.move?.pve?.damagePerSecond}
                                  </Badge>
@@ -174,7 +198,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                            </Tooltip>
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="violet">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-20 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">DPE</div>
                                     {row?.move?.pve?.damagePerEnergy}
                                  </Badge>
@@ -183,7 +210,10 @@ export function Moves({ data: pokemon }: { data: PokemonType }) {
                            </Tooltip>
                            <Tooltip placement="top">
                               <TooltipTrigger>
-                                 <Badge color="amber">
+                                 <Badge
+                                    color="zinc"
+                                    className="w-16 flex items-center justify-center !py-1 !text-xs"
+                                 >
                                     <div className="font-bold text-1">DW</div>
                                     {row?.move?.pve?.dodgeWindow}
                                  </Badge>

@@ -56,7 +56,7 @@ async function mapper() {
          uniquePokemon.map(async (row: any) => {
             try {
                const existingPokemon = await payload.find({
-                  collection: "pokemon",
+                  collection: "pokemon-families",
                   where: { name: { equals: row?.title } },
                });
 
@@ -67,11 +67,12 @@ async function mapper() {
                   return;
                }
                await payload.create({
-                  collection: "pokemon",
+                  collection: "pokemon-families",
                   data: {
                      id: manaSlug(row?.title),
                      name: row?.title,
                      slug: manaSlug(row?.title),
+                     basePokemon: "",
                   },
                });
                console.log(`Document added successfully`);
