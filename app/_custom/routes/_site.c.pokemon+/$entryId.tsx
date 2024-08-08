@@ -58,7 +58,7 @@ export default function EntryPage() {
 
    const data = {
       pokemon: entry.data.pokemon as PokemonType,
-      family: entry.data.family as PokemonFamilyType,
+      family: entry.data.family.docs[0] as PokemonFamilyType,
    };
 
    return <Entry customComponents={SECTIONS} customData={data} />;
@@ -189,10 +189,53 @@ const QUERY = gql`
          docs {
             name
             basePokemon {
+               id
                name
                slug
                icon {
                   url
+               }
+            }
+            stage2Pokemon {
+               evolutionRequirements {
+                  id
+                  name
+               }
+               pokemon {
+                  id
+                  name
+                  slug
+                  icon {
+                     url
+                  }
+               }
+            }
+            stage3Pokemon {
+               evolutionRequirements {
+                  id
+                  name
+               }
+               pokemon {
+                  id
+                  name
+                  slug
+                  icon {
+                     url
+                  }
+               }
+            }
+            stage4Pokemon {
+               evolutionRequirements {
+                  id
+                  name
+               }
+               pokemon {
+                  id
+                  name
+                  slug
+                  icon {
+                     url
+                  }
                }
             }
          }
