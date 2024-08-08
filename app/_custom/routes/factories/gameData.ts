@@ -1,3 +1,5 @@
+import cpmCosts from "./cpm.json";
+
 // (function() {
 //     'use strict'
 
@@ -125,7 +127,7 @@ export function fetchCPMCosts(data) {
    var paths = "/assets/data/cpm.json?71";
    $http.get(paths).then(function (response) {
       if (response.status == 200) {
-         service.cpmCosts = response.data;
+         cpmCosts = response.data;
       }
    });
 }
@@ -168,9 +170,9 @@ export function getECpM(level) {
 // use this instead
 export function getCPM(level) {
    level = "" + level;
-   for (var i = 0; i < service.cpmCosts.length; i++) {
-      if (service.cpmCosts[i].name == level) {
-         return service.cpmCosts[i].field_cp_multiplier;
+   for (var i = 0; i < cpmCosts.length; i++) {
+      if (cpmCosts[i].name == level) {
+         return cpmCosts[i].field_cp_multiplier;
       }
    }
 }
@@ -199,20 +201,20 @@ export function calculateStardustCost(pokemonLevel, targetLevel) {
 
    var startingXLCandy = 0,
       targetXLCandy = 0;
-   for (var i = 0; i < service.cpmCosts.length; i++) {
-      if (service.cpmCosts[i].name == pokemonLevel) {
-         startingStardust = service.cpmCosts[i].field_cumulative_stardust;
-         startingCandy = service.cpmCosts[i].field_cumulative_candy;
-         startingXLCandy = service.cpmCosts[i].field_cumulative_xl_candy
-            ? service.cpmCosts[i].field_cumulative_xl_candy
+   for (var i = 0; i < cpmCosts.length; i++) {
+      if (cpmCosts[i].name == pokemonLevel) {
+         startingStardust = cpmCosts[i].field_cumulative_stardust;
+         startingCandy = cpmCosts[i].field_cumulative_candy;
+         startingXLCandy = cpmCosts[i].field_cumulative_xl_candy
+            ? cpmCosts[i].field_cumulative_xl_candy
             : 0;
       }
 
-      if (service.cpmCosts[i].name == targetLevel) {
-         targetStardust = service.cpmCosts[i].field_cumulative_stardust;
-         targetCandy = service.cpmCosts[i].field_cumulative_candy;
-         targetXLCandy = service.cpmCosts[i].field_cumulative_xl_candy
-            ? service.cpmCosts[i].field_cumulative_xl_candy
+      if (cpmCosts[i].name == targetLevel) {
+         targetStardust = cpmCosts[i].field_cumulative_stardust;
+         targetCandy = cpmCosts[i].field_cumulative_candy;
+         targetXLCandy = cpmCosts[i].field_cumulative_xl_candy
+            ? cpmCosts[i].field_cumulative_xl_candy
             : 0;
       }
    }
