@@ -23,12 +23,12 @@ function FamilyItem({
             clsx(
                "border flex-auto rounded-lg p-2 gap-2 items-center shadow-sm shadow-1",
                isActive
-                  ? "dark:bg-dark450 bg-zinc-100 border-zinc-300 dark:border-zinc-600"
-                  : "bg-3-sub border-color-sub hover:bg-zinc-50",
+                  ? "dark:bg-dark450 bg-zinc-50 border-zinc-300 dark:border-zinc-600"
+                  : "bg-3-sub border-color-sub hover:bg-zinc-50 dark:hover:bg-dark450 dark:hover:border-zinc-600 hover:border-zinc-300",
             )
          }
       >
-         <div className="flex gap-2 items-center">
+         <div className="flex gap-2.5 items-center">
             <Image
                width={80}
                height={80}

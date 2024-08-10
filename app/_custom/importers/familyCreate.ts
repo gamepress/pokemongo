@@ -27,33 +27,27 @@ const start = async () =>
 start();
 
 async function mapper() {
-   const requests = Array.from({ length: 15 }, (_, i) =>
+   const familyEvolutionRequests = Array.from({ length: 15 }, (_, i) =>
       fetch(
-         `https://gamepress.gg/pokemongo/pokemongo-family?page=${i}&_format=json`,
+         `https://pogo.gamepress.gg/family-export?page=${i}&_format=json`,
       ).then((response) => response.json()),
    );
 
-   const getPokemon = await Promise.all(requests);
+   const familyRequests = Array.from({ length: 15 }, (_, i) =>
+      fetch(
+         `https://pogo.gamepress.gg/families-feed?page=${i}&_format=json`,
+      ).then((response) => response.json()),
+   );
 
-   const flattenedPokemon = getPokemon.flat();
+   const familyEvolutionRequirements = await Promise.all(
+      familyEvolutionRequests,
+   );
 
-   console.log(flattenedPokemon.length, "flattenedPokemon");
-
-   const uniquePokemon = flattenedPokemon.reduce((acc, curr) => {
-      const existingPokemon = acc.find(
-         (pokemon: any) => pokemon.title === curr.title,
-      );
-      if (!existingPokemon) {
-         acc.push(curr);
-      }
-      return acc;
-   }, []);
-
-   console.log(uniquePokemon.length, "uniquePokemon");
+   const families = await Promise.all(familyRequests);
 
    try {
       await Promise.all(
-         uniquePokemon.map(async (row: any) => {
+         families.map(async (row: any) => {
             try {
                const existingPokemon = await payload.find({
                   collection: "pokemon-families",
@@ -66,13 +60,98 @@ async function mapper() {
                   );
                   return;
                }
+
+               const stage2Mons =
+                  row.stage_2 &&
+                  row.stage_2.split(",").map((stageMon: any) => {
+                     const evolutionReqs = familyEvolutionRequirements.find(
+                        (lookupMon: any) => {
+                           return (
+                              lookupMon.field_evolution_chain_pokemon ===
+                              stageMon
+                           );
+                        },
+                     );
+                     const evoReq = evolutionReqs?.field_evolution_requirements;
+
+                     return {
+                        pokemon: manaSlug(row),
+                        evolutionRequirements: evoReq
+                           .split(",")
+                           .map((row: any) => {
+                              return manaSlug(row);
+                           }),
+                     };
+                  });
+
+               const stage3Mons =
+                  row.stage_3 &&
+                  row.stage_3.split(",").map((stageMon: any) => {
+                     const evolutionReqs = familyEvolutionRequirements.find(
+                        (lookupMon: any) => {
+                           return (
+                              lookupMon.field_evolution_chain_pokemon ===
+                              stageMon
+                           );
+                        },
+                     );
+                     const evoReq = evolutionReqs?.field_evolution_requirements;
+
+                     return {
+                        pokemon: manaSlug(row),
+                        evolutionRequirements: evoReq
+                           .split(",")
+                           .map((row: any) => {
+                              return manaSlug(row);
+                           }),
+                     };
+                  });
+
+               const stage4Mons =
+                  row.stage_4 &&
+                  row.stage_4.split(",").map((stageMon: any) => {
+                     const evolutionReqs = familyEvolutionRequirements.find(
+                        (lookupMon: any) => {
+                           return (
+                              lookupMon.field_evolution_chain_pokemon ===
+                              stageMon
+                           );
+                        },
+                     );
+                     const evoReq = evolutionReqs?.field_evolution_requirements;
+
+                     return {
+                        pokemon: manaSlug(row),
+                        evolutionRequirements: evoReq
+                           .split(",")
+                           .map((row: any) => {
+                              return manaSlug(row);
+                           }),
+                     };
+                  });
+
                await payload.create({
                   collection: "pokemon-families",
                   data: {
                      id: manaSlug(row?.title),
+                     pokemonInFamily: [
+                        manaSlug(row?.base),
+                        ...row.stage_2.split(",").map((row: any) => {
+                           return manaSlug(row);
+                        }),
+                        ...row.stage_3.split(",").map((row: any) => {
+                           return manaSlug(row);
+                        }),
+                        ...row.stage_4.split(",").map((row: any) => {
+                           return manaSlug(row);
+                        }),
+                     ],
                      name: row?.title,
                      slug: manaSlug(row?.title),
-                     basePokemon: "",
+                     basePokemon: manaSlug(row?.base),
+                     stage2Pokemon: stage2Mons,
+                     stage3Pokemon: stage3Mons,
+                     stage4Pokemon: stage4Mons,
                   },
                });
                console.log(`Document added successfully`);
