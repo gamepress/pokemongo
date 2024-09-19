@@ -1,3 +1,7 @@
 {
-   "cSpell.words": ["clsx"]
+   "cSpell.words": ["clsx"],
+   "tailwind-fold.foldStyle": "QUOTES",
+   "tailwind-fold.unfoldIfLineSelected": true,
+   "tailwind-fold.showTailwindImage": true,
+   "tailwind-fold.foldLengthThreshold": 80
 }
