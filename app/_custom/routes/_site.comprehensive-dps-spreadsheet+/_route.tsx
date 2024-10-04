@@ -49,6 +49,8 @@ import { GM, Data, weathers, pokeTypes, PokeQuery } from "./dataFactory";
 import { parseMoves } from "./parseMoves";
 import { parsePokemons } from "./parsePokemons";
 import { CustomPageHeader } from "~/components/CustomPageHeader";
+import { filter } from "compression";
+import { copyToClipBoard } from "~/routes/_site+/settings+/utils/copyToClipBoard";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -771,26 +773,78 @@ function ResultsTable() {
          </Table>
          <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
             Displaying {start + 1} to {end} of {count} results
+            <button
+               id="CopyClipboardButton"
+               onClick={copyTableToClipboard}
+               className="relative isolate inline-flex items-center justify-center gap-x-2 rounded-lg border text-base/6 font-semibold px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing.3)-1px)] tablet:py-[calc(theme(spacing[1.5]))] tablet:text-tablet/6 focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500 data-[disabled]:opacity-50 [&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 [&>[data-slot=icon]]:tablet:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText] border-transparent bg-[--btn-border] dark:bg-[--btn-bg] before:absolute before:inset-0 before:-z-10 before:rounded-[calc(theme(borderRadius.lg)-1px)] before:bg-[--btn-bg] before:shadow dark:before:hidden dark:border-white/5 after:absolute after:inset-0 after:-z-10 after:rounded-[calc(theme(borderRadius.lg)-1px)] after:shadow-[shadow:inset_0_1px_theme(colors.white/15%)] after:data-[active]:bg-[--btn-hover-overlay] after:data-[hover]:bg-[--btn-hover-overlay] dark:after:-inset-px dark:after:rounded-lg before:data-[disabled]:shadow-none after:data-[disabled]:shadow-none text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.green.600)] [--btn-border:theme(colors.green.700/90%)] [--btn-icon:theme(colors.white/60%)] data-[active]:[--btn-icon:theme(colors.white/80%)] data-[hover]:[--btn-icon:theme(colors.white/80%)] cursor-pointer "
+            >
+               Copy to Clipboard
+            </button>
+            <button
+               id="CopyCSVButton"
+               onClick={exportTableToCSV}
+               className="relative isolate inline-flex items-center justify-center gap-x-2 rounded-lg border text-base/6 font-semibold px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing.3)-1px)] tablet:py-[calc(theme(spacing[1.5]))] tablet:text-tablet/6 focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500 data-[disabled]:opacity-50 [&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 [&>[data-slot=icon]]:tablet:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText] border-transparent bg-[--btn-border] dark:bg-[--btn-bg] before:absolute before:inset-0 before:-z-10 before:rounded-[calc(theme(borderRadius.lg)-1px)] before:bg-[--btn-bg] before:shadow dark:before:hidden dark:border-white/5 after:absolute after:inset-0 after:-z-10 after:rounded-[calc(theme(borderRadius.lg)-1px)] after:shadow-[shadow:inset_0_1px_theme(colors.white/15%)] after:data-[active]:bg-[--btn-hover-overlay] after:data-[hover]:bg-[--btn-hover-overlay] dark:after:-inset-px dark:after:rounded-lg before:data-[disabled]:shadow-none after:data-[disabled]:shadow-none text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.green.600)] [--btn-border:theme(colors.green.700/90%)] [--btn-icon:theme(colors.white/60%)] data-[active]:[--btn-icon:theme(colors.white/80%)] data-[hover]:[--btn-icon:theme(colors.white/80%)] cursor-pointer "
+            >
+               Export To CSV
+            </button>
             <Pagination count={count} />
          </div>
-         {/* {count} results
-         <div className="container">
-            <div className="row">
-               <div className="col-sm-6">
-                  <button id="CopyClipboardButton" className="btn btn-info">
-                     Copy to Clipboard (todo)
-                  </button>
-               </div>
-               <div className="col-sm-6">
-                  <button id="CopyCSVButton" className="btn btn-info">
-                     Export To CSV (todo)
-                  </button>
-               </div>
-            </div>
-         </div> */}
       </>
    );
+
+   // copy filtered data into clipboard, using tabs and new
+   function copyTableToClipboard() {
+      let clipboard = "Pokemon\tFast Move\tCharged Move\tDPS\tTDO\tER\tCP\n";
+
+      filtered.forEach((pokemon: any) => {
+         clipboard += `${pokemon.label}\t${pokemon.fmove.label}\t${pokemon.cmove.label}\t${pokemon.ui_dps}\t${pokemon.ui_tdo}\t${pokemon.ui_overall}\t${pokemon.ui_cp}\n`;
+      });
+
+      copyToClipboard(clipboard);
+   }
+
+   // paste filtered data into clipboard, using commas and new line
+   function exportTableToCSV() {
+      let csv = "Pokemon,Fast Move,Charged Move,DPS,TDO,ER,CP\n";
+
+      filtered.forEach((pokemon: any) => {
+         csv += `${pokemon.label},${pokemon.fmove.label},${pokemon.cmove.label},${pokemon.ui_dps},${pokemon.ui_tdo},${pokemon.ui_overall},${pokemon.ui_cp}\n`;
+      });
+
+      copyToClipboard(csv);
+   }
 }
+
+export function copyToClipboard(str: string) {
+   navigator.clipboard
+      .writeText(str)
+      .then(() => {
+         console.log("Text copied to clipboard");
+      })
+      .catch((err) => {
+         console.error("Failed to copy text: ", err);
+      });
+}
+
+// if(!document)
+// 	const el = document.createElement('textarea');  // Create a <textarea> element
+// 	el.value = str;                                 // Set its value to the string that you want copied
+// 	el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
+// 	el.style.position = 'absolute';
+// 	el.style.left = '-9999px';                      // Move outside the screen to make it invisible
+// 	document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
+// 	const selected =
+// 		document.getSelection().rangeCount > 0        // Check if there is any content selected previously
+// 			? document.getSelection().getRangeAt(0)     // Store selection if found
+// 			: false;                                    // Mark as false to know no selection existed before
+// 	el.select();                                    // Select the <textarea> content
+// 	document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
+// 	document.body.removeChild(el);                  // Remove the <textarea> element
+// 	if (selected) {                                 // If a selection existed before copying
+// 		document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
+// 		document.getSelection().addRange(selected);   // Restore the original selection
+// 	}
+// };
 
 function filterResults(results, searchParams) {
    let filtered = results;
