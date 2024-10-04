@@ -27,6 +27,7 @@ import clsx from "clsx";
 
 import type { Move, Pokemon } from "payload/generated-custom-types";
 import { Button } from "~/components/Button";
+import { CustomPageHeader } from "~/components/CustomPageHeader";
 import { Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
@@ -48,9 +49,6 @@ import { generateSpreadsheet, getCustom, getEnemy } from "./calc";
 import { GM, Data, weathers, pokeTypes, PokeQuery } from "./dataFactory";
 import { parseMoves } from "./parseMoves";
 import { parsePokemons } from "./parsePokemons";
-import { CustomPageHeader } from "~/components/CustomPageHeader";
-import { filter } from "compression";
-import { copyToClipBoard } from "~/routes/_site+/settings+/utils/copyToClipBoard";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -398,7 +396,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      name="dps-form"
                      preventScrollReset={true}
                      onChange={(e) => {
-                        console.log(e.currentTarge);
+                        console.log(e.currentTarget);
                         submit(e.currentTarget, {
                            method: "GET",
                            preventScrollReset: true,
@@ -787,6 +785,7 @@ function ResultsTable() {
             >
                Export To CSV
             </button>
+            s
             <Pagination count={count} />
          </div>
       </>
