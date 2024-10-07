@@ -24,6 +24,7 @@ import {
    useSubmit,
 } from "@remix-run/react";
 import clsx from "clsx";
+import { toast } from "sonner";
 
 import type { Move, Pokemon } from "payload/generated-custom-types";
 import { Button } from "~/components/Button";
@@ -800,6 +801,7 @@ function ResultsTable() {
       });
 
       copyToClipboard(clipboard);
+      toast.success("Copied to clipboard");
    }
 
    // paste filtered data into clipboard, using commas and new line
