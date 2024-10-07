@@ -810,8 +810,20 @@ function ResultsTable() {
          csv += `${pokemon.label},${pokemon.fmove.label},${pokemon.cmove.label},${pokemon.ui_dps},${pokemon.ui_tdo},${pokemon.ui_overall},${pokemon.ui_cp}\n`;
       });
 
-      copyToClipboard(csv);
+      downloadCSV(csv);
    }
+}
+
+export function downloadCSV(csv: string) {
+   const blob = new Blob([csv], { type: "text/csv" });
+   const url = window.URL.createObjectURL(blob);
+   const a = document.createElement("a");
+   a.setAttribute("hidden", "");
+   a.href = url;
+   a.download = "dps-tdo.csv";
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
 }
 
 export function copyToClipboard(str: string) {
