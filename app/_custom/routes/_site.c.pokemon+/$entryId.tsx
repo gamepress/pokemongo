@@ -94,6 +94,7 @@ const QUERY = gql`
          height
          ratings {
             attackerRating
+            dynamaxRating
             greatLeagueRating
             ultraLeagueRating
             masterLeagueRating
