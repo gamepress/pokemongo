@@ -51,12 +51,17 @@ const SECTIONS = {
    other: OtherInfo,
 };
 
+interface EntryData {
+   pokemon: PokemonType;
+   family?: { docs: PokemonFamilyType[] };
+}
+
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
 
    const data = {
-      pokemon: entry.data.pokemon as PokemonType,
-      family: entry?.data?.family?.docs[0] as PokemonFamilyType,
+      pokemon: (entry.data as EntryData).pokemon,
+      family: (entry.data as EntryData).family?.docs[0],
    };
 
    return <Entry customComponents={SECTIONS} customData={data} />;
@@ -92,6 +97,24 @@ const QUERY = gql`
             greatLeagueRating
             ultraLeagueRating
             masterLeagueRating
+         }
+         dynamaxMoves {
+            id
+            name
+            slug
+            category
+            icon {
+               url
+            }
+            type {
+               name
+               boostedWeather {
+                  name
+                  icon {
+                     url
+                  }
+               }
+            }
          }
          fastMoves {
             category

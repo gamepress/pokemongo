@@ -20,6 +20,32 @@ export function Moves({
 
    return (
       <>
+         {pokemon?.dynamaxMoves && pokemon?.dynamaxMoves?.length > 0 ? (
+            <>
+               <H2Plain text="Dynamax" className="!text-xl" />
+               <div className="grid grid-cols-3 gap-3">
+                  {pokemon?.dynamaxMoves?.map((row) => (
+                     <Link
+                        to={`/c/moves/${row?.slug}`}
+                        key={row?.id}
+                        className="bg-2-sub border border-color-sub
+                         rounded-lg p-2.5 flex flex-col items-center gap-1 shadow-sm shadow-1 group"
+                     >
+                        <Image
+                           height={100}
+                           width={100}
+                           className="mx-auto size-12 border border-color-sub rounded-full overflow-hidden"
+                           url={row?.icon?.url}
+                           alt={row?.name ?? ""}
+                        />
+                        <div className="text-center text-sm font-bold group-hover:underline">
+                           {row?.name}
+                        </div>
+                     </Link>
+                  ))}
+               </div>
+            </>
+         ) : null}
          <H2Plain text="Fast" className="!text-xl" />
          <div className="border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-xl overflow-hidden mb-3">
             {pokemon.fastMoves?.map((row) => (
@@ -38,7 +64,7 @@ export function Moves({
                                     width={21}
                                     url={row?.move?.icon?.url}
                                     options="height=40&width=40"
-                                    alt={row?.move?.name}
+                                    alt={row?.move?.name ?? ""}
                                  />
                               </TooltipTrigger>
                               <TooltipContent>
@@ -99,7 +125,7 @@ export function Moves({
                               width={28}
                               url={row.move?.type?.boostedWeather?.icon?.url}
                               options="height=40&width=40"
-                              alt={row.move?.type?.boostedWeather?.name}
+                              alt={row.move?.type?.boostedWeather?.name ?? ""}
                            />
                         </TooltipTrigger>
                         <TooltipContent>
@@ -135,7 +161,7 @@ export function Moves({
                                              width={21}
                                              url={row?.move?.icon?.url}
                                              options="height=40&width=40"
-                                             alt={row?.move?.name}
+                                             alt={row?.move?.name ?? ""}
                                           />
                                        </TooltipTrigger>
                                        <TooltipContent>
@@ -210,7 +236,9 @@ export function Moves({
                                  width={28}
                                  url={row.move?.type?.boostedWeather?.icon?.url}
                                  options="height=40&width=40"
-                                 alt={row.move?.type?.boostedWeather?.name}
+                                 alt={
+                                    row.move?.type?.boostedWeather?.name ?? ""
+                                 }
                               />
                            </TooltipTrigger>
                            <TooltipContent>

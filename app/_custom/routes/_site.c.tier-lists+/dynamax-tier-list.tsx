@@ -46,7 +46,7 @@ const SECTIONS = {
    "tier-6": TierSix,
 };
 
-export default function AttackersTierList() {
+export default function DynamaxTierList() {
    const { entry } = useLoaderData<typeof loader>();
 
    const tier_list = entry.data;
@@ -67,7 +67,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__attackerRating: { equals: new EnumType("s") },
+               ratings__dynamaxRating: { equals: new EnumType("s") },
             },
          },
          docs: {
@@ -93,7 +93,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__attackerRating: { equals: new EnumType("a_plus") },
+               ratings__dynamaxRating: { equals: new EnumType("a_plus") },
             },
          },
          docs: {
@@ -119,7 +119,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__attackerRating: { equals: new EnumType("a") },
+               ratings__dynamaxRating: { equals: new EnumType("a") },
             },
          },
          docs: {
@@ -145,7 +145,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__attackerRating: { equals: new EnumType("b_plus") },
+               ratings__dynamaxRating: { equals: new EnumType("b_plus") },
             },
          },
          docs: {
@@ -171,7 +171,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__attackerRating: { equals: new EnumType("b") },
+               ratings__dynamaxRating: { equals: new EnumType("b") },
             },
          },
          docs: {
@@ -197,7 +197,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__attackerRating: { equals: new EnumType("c") },
+               ratings__dynamaxRating: { equals: new EnumType("c") },
             },
          },
          docs: {
