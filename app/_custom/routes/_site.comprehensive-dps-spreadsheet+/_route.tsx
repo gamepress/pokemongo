@@ -58,14 +58,11 @@ const simpleCache = {} as Record<string, any>;
 export async function loader({ request }: LoaderFunctionArgs) {
    const moves = await fetchWithCache<{ docs: Move[] }>(
       "http://localhost:4000/api/moves?limit=0&depth=0",
-      undefined,
-      10 * 60 * 1000,
    );
    const pokemons = await fetchWithCache<{ docs: Pokemon[] }>(
       "http://localhost:4000/api/pokemon?limit=0&depth=1",
-      undefined,
-      10 * 60 * 1000,
    );
+
    // we should cache these at some point
    const pokeMoves = parseMoves(moves);
    const pokemon = parsePokemons(pokemons);
