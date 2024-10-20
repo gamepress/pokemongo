@@ -290,7 +290,7 @@ export function Introduction() {
                         <div className="flex justify-between p-3">
                            <span className="font-bold">Move Type</span>
                            <span className="text-1 float-right">
-                              @ghost, @1ghost, @2ghost, *@ghost
+                              @ghost, @1ghost, @2ghost, @*ghost
                            </span>
                         </div>
                         <div className="flex justify-between p-3">
