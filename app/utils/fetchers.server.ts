@@ -88,7 +88,7 @@ export function authRestFetcher({
    body,
 }: {
    path: string;
-   method: "PATCH" | "GET";
+   method: "PATCH" | "GET" | "DELETE" | "POST";
    body?: any;
 }) {
    try {
@@ -98,11 +98,10 @@ export function authRestFetcher({
             headers: {
                Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
                "Content-Type": "application/json",
-               // connection: "keep-alive",
             },
          }),
          ...(body &&
-            method == "PATCH" && {
+            (method == "PATCH" || method == "POST") && {
                body: JSON.stringify({
                   ...body,
                }),
