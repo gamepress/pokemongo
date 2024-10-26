@@ -4,13 +4,17 @@ import {
    isStaff,
    isStaffFieldLevel,
    isStaffOrSelf,
+   isStaffOrSelfFieldLevel,
 } from "../collections/users/users.access";
+
 export const Users: CollectionConfig = {
    slug: "users",
-   auth: true,
+   auth: {
+      useAPIKey: true,
+   },
    access: {
-      read: () => true,
-      create: () => true,
+      read: isStaff,
+      create: isStaff,
       delete: isStaff,
       update: isStaffOrSelf,
    },
@@ -48,6 +52,20 @@ export const Users: CollectionConfig = {
          unique: true,
          access: {
             read: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "apiKey",
+         type: "text",
+         access: {
+            read: isStaffOrSelfFieldLevel,
+         },
+      },
+      {
+         name: "enableAPIKey",
+         type: "text",
+         access: {
+            read: isStaffOrSelfFieldLevel,
          },
       },
    ],

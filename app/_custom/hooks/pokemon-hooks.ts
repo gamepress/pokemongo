@@ -12,7 +12,9 @@ export const pokemonAfterChangeHook: CollectionAfterChangeHook = async ({
          (move: { move: string }) => move.move,
       );
 
-      const allMoves = [...fastMoves, ...chargeMoves];
+      const dynamaxMoves = doc?.dynamaxMoves;
+
+      const allMoves = [...fastMoves, ...chargeMoves, ...dynamaxMoves];
 
       //Update the moves collection with Pokemon who have this move
       for (const result of allMoves) {
@@ -36,9 +38,7 @@ export const pokemonAfterChangeHook: CollectionAfterChangeHook = async ({
                pokemonWithMove: finalPokemonWithMove,
             },
          });
-         //@ts-ignore
       }
-      console.log(doc.name);
       return doc;
    } catch (err: unknown) {
       payload.logger.error(`${err}`);

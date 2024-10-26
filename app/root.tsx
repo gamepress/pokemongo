@@ -15,6 +15,7 @@ import {
    Outlet,
    Scripts,
    useLoaderData,
+   useLocation,
    useNavigation,
 } from "@remix-run/react";
 import splideCSS from "@splidejs/splide/dist/css/splide-core.min.css";
@@ -90,6 +91,7 @@ export const loader = async ({
          user,
          siteSlug,
          following,
+         origin: new URL(request.url).origin,
       },
       { headers },
    );
@@ -101,6 +103,28 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 ];
 
 export const links: LinksFunction = () => [
+   // preload base font to avoid CLS
+   {
+      rel: "preload",
+      href: "/fonts/Nunito_Sans/NunitoSans-Regular.woff2",
+      as: "font",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+   },
+
+   //preload css makes it nonblocking to html renders
+   { rel: "preload", href: fonts, as: "style" },
+   { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
+   { rel: "preload", href: customStylesheetUrl, as: "style" },
+   { rel: "preload", href: splideCSS, as: "style" },
+   { rel: "preload", href: reactCropUrl, as: "style" },
+
+   { rel: "stylesheet", href: fonts },
+   { rel: "stylesheet", href: tailwindStylesheetUrl },
+   { rel: "stylesheet", href: customStylesheetUrl },
+   { rel: "stylesheet", href: splideCSS },
+   { rel: "stylesheet", href: reactCropUrl },
+
    { rel: "preconnect", href: "https://static.mana.wiki" },
    { rel: "preconnect", href: "https://www.googletagmanager.com" },
    { rel: "preconnect", href: "https://www.google-analytics.com" },
@@ -109,28 +133,6 @@ export const links: LinksFunction = () => [
    { rel: "dns-prefetch", href: "https://static.mana.wiki" },
    { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
    { rel: "dns-prefetch", href: "https://www.google-analytics.com" },
-
-   //preload css makes it nonblocking to html renders
-   { rel: "preload", href: fonts, as: "style" },
-   { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
-   { rel: "preload", href: customStylesheetUrl, as: "style" },
-   { rel: "preload", href: splideCSS, as: "style" },
-
-   { rel: "preload", href: reactCropUrl, as: "style" },
-
-   { rel: "stylesheet", href: reactCropUrl },
-   { rel: "stylesheet", href: fonts },
-   { rel: "stylesheet", href: tailwindStylesheetUrl },
-   { rel: "stylesheet", href: customStylesheetUrl },
-   { rel: "stylesheet", href: splideCSS },
-
-   {
-      rel: "preload",
-      href: "/fonts/Nunito_Sans/NunitoSans-Regular.woff2",
-      as: "font",
-      type: "font/woff2",
-      crossOrigin: "anonymous",
-   },
 
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
@@ -182,10 +184,11 @@ function ProgressBar() {
 }
 
 function App() {
-   const { locale, toast } = useLoaderData<typeof loader>();
+   const { locale, toast, origin } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
+   const location = useLocation();
 
    useChangeLanguage(locale);
    const { site } = useSiteLoaderData();
@@ -256,6 +259,11 @@ function App() {
                   href="/favicon.ico"
                />
             )}
+            <link
+               //drop search query for canonical url so google won't get confused
+               rel="canonical"
+               href={origin + location.pathname}
+            />
             <Meta />
             <Links />
          </head>

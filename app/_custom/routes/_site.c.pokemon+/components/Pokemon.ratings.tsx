@@ -11,7 +11,9 @@ export function Ratings({ pokemon }: { pokemon: PokemonType }) {
       pokemon.ratings?.attackerRating ||
       pokemon.ratings?.greatLeagueRating ||
       pokemon.ratings?.ultraLeagueRating ||
-      pokemon.ratings?.masterLeagueRating;
+      pokemon.ratings?.masterLeagueRating ||
+      pokemon.ratings?.dynamaxRating;
+
    return (
       <>
          {hasAnyRatings && (
@@ -42,6 +44,33 @@ export function Ratings({ pokemon }: { pokemon: PokemonType }) {
                      </Badge>
                   </Link>
                )}
+               {pokemon.ratings?.dynamaxRating ? (
+                  <Link
+                     to="/c/tier-lists/dynamax-tier-list"
+                     className="relative flex items-center dark:hover:bg-dark400 hover:bg-white justify-between gap-1.5 p-2.5"
+                  >
+                     <div className="flex items-center gap-2.5">
+                        <Image
+                           height={28}
+                           width={28}
+                           className="rounded-full border border-color-sub"
+                           url="https://static.mana.wiki/pokemongo/Max-Strike.png"
+                           options="height=120&width=120"
+                           alt="Dynamax Tier List"
+                        />
+                        <div className="font-semibold text-sm">
+                           Dynamax Tier List
+                        </div>
+                     </div>
+                     <Badge color="rose">
+                        <RatingsLabel
+                           fieldName="dynamaxRating"
+                           value={pokemon.ratings?.dynamaxRating}
+                        />{" "}
+                        Tier
+                     </Badge>
+                  </Link>
+               ) : null}
                {pokemon.ratings?.greatLeagueRating && (
                   <Link
                      to="/c/tier-lists/great-league-pvp-tier-list"

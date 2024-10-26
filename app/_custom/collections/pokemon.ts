@@ -423,6 +423,12 @@ export const Pokemon: CollectionConfig = {
                   },
                ],
             },
+            {
+               name: "dynamaxMoves",
+               type: "relationship",
+               relationTo: "moves",
+               hasMany: true,
+            },
          ],
       },
       {
@@ -435,6 +441,40 @@ export const Pokemon: CollectionConfig = {
                fields: [
                   {
                      name: "attackerRating",
+                     type: "select",
+                     hasMany: false,
+                     admin: {
+                        isClearable: true,
+                     },
+                     options: [
+                        {
+                           label: "S",
+                           value: "s",
+                        },
+                        {
+                           label: "A+",
+                           value: "a_plus",
+                        },
+                        {
+                           label: "A",
+                           value: "a",
+                        },
+                        {
+                           label: "B+",
+                           value: "b_plus",
+                        },
+                        {
+                           label: "B",
+                           value: "b",
+                        },
+                        {
+                           label: "C",
+                           value: "c",
+                        },
+                     ],
+                  },
+                  {
+                     name: "dynamaxRating",
                      type: "select",
                      hasMany: false,
                      admin: {
