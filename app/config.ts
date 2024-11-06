@@ -6,4 +6,7 @@ export type ManaConfig = {
    typesenseSearchOnlyKey?: string; //API key that only allows search operations
 };
 
-export const settings: ManaConfig = {};
+export const settings: ManaConfig = {
+   fromName: "GamePress - Pokemon GO",
+   fromEmail: "noreply@gamepress.gg",
+};
