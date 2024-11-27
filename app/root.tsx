@@ -20,7 +20,6 @@ import {
 } from "@remix-run/react";
 import splideCSS from "@splidejs/splide/dist/css/splide-core.min.css";
 import clsx from "clsx";
-import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
@@ -29,7 +28,6 @@ import { Toaster, toast as notify } from "sonner";
 import customStylesheetUrl from "~/_custom/styles.css";
 import fonts from "~/styles/fonts.css";
 import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
-import { i18nextServer } from "~/utils/i18n/i18next.server";
 import { useIsBot } from "~/utils/isBotProvider";
 import { getTheme } from "~/utils/theme.server";
 
@@ -52,7 +50,6 @@ export const loader = async ({
 }: LoaderFunctionArgs) => {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const locale = await i18nextServer.getLocale(request);
    // Extracts the toast from the request
    const { toast, headers } = await getToast(request);
 
@@ -87,7 +84,6 @@ export const loader = async ({
          },
          stripePublicKey,
          toast,
-         locale,
          user,
          siteSlug,
          following,
@@ -139,11 +135,6 @@ export const links: LinksFunction = () => [
       : []),
 ];
 
-export const handle = {
-   // i18n key for this route. This will be used to load the correct translation
-   i18n: "auth",
-};
-
 function ProgressBar() {
    const navigation = useNavigation();
    const active = navigation.state !== "idle";
@@ -184,13 +175,11 @@ function ProgressBar() {
 }
 
 function App() {
-   const { locale, toast, origin } = useLoaderData<typeof loader>();
-   const { i18n } = useTranslation();
+   const { toast, origin } = useLoaderData<typeof loader>();
    const isBot = useIsBot();
    const theme = useTheme();
    const location = useLocation();
 
-   useChangeLanguage(locale);
    const { site } = useSiteLoaderData();
 
    // Hook to show the toasts
@@ -206,11 +195,7 @@ function App() {
    const [searchToggle, setSearchToggle] = useState(false);
 
    return (
-      <html
-         lang={locale}
-         dir={i18n.dir()}
-         className={`font-body scroll-smooth ${theme ?? ""}`}
-      >
+      <html className={`font-body scroll-smooth ${theme ?? ""}`}>
          <head>
             {!isBot && <ClientHintCheck />}
             <meta charSet="utf-8" />
@@ -289,20 +274,16 @@ function App() {
 }
 
 // Toggle Remix Dev Tools
+// let AppExport = App;
 // if (process.env.NODE_ENV === "development") {
 //    const { withDevTools } = require("remix-development-tools");
 
 //    AppExport = withDevTools(AppExport);
 // }
 
-export default App;
+// export default AppExport;
 
-export function useChangeLanguage(locale: string) {
-   let { i18n } = useTranslation();
-   useEffect(() => {
-      i18n.changeLanguage(locale);
-   }, [locale, i18n]);
-}
+export default App;
 
 // don't revalidate loader when url param changes
 export function shouldRevalidate({
