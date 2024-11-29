@@ -12,6 +12,7 @@ import { TierFour } from "./components/TierFour";
 import { TierOne } from "./components/TierOne";
 import { TierThree } from "./components/TierThree";
 import { TierTwo } from "./components/TierTwo";
+import { TierSix } from "./components/TierSix";
 
 export { entryMeta as meta };
 
@@ -42,6 +43,7 @@ const SECTIONS = {
    "tier-3": TierThree,
    "tier-4": TierFour,
    "tier-5": TierFive,
+   "tier-6": TierSix,
 };
 
 export default function UltraLeagueTierList() {
@@ -91,18 +93,9 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__ultraLeagueRating: {
-                        equals: new EnumType("_4_5"),
-                     },
-                  },
-                  {
-                     ratings__ultraLeagueRating: {
-                        equals: new EnumType("_4_0"),
-                     },
-                  },
-               ],
+               ratings__ultraLeagueRating: {
+                  equals: new EnumType("_4_5"),
+               },
             },
          },
          docs: {
@@ -128,18 +121,9 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__ultraLeagueRating: {
-                        equals: new EnumType("_3_5"),
-                     },
-                  },
-                  {
-                     ratings__ultraLeagueRating: {
-                        equals: new EnumType("_3_0"),
-                     },
-                  },
-               ],
+               ratings__ultraLeagueRating: {
+                  equals: new EnumType("_4_0"),
+               },
             },
          },
          docs: {
@@ -165,18 +149,9 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__ultraLeagueRating: {
-                        equals: new EnumType("_2_5"),
-                     },
-                  },
-                  {
-                     ratings__ultraLeagueRating: {
-                        equals: new EnumType("_2_0"),
-                     },
-                  },
-               ],
+               ratings__ultraLeagueRating: {
+                  equals: new EnumType("_3_5"),
+               },
             },
          },
          docs: {
@@ -202,15 +177,43 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
+               ratings__ultraLeagueRating: {
+                  equals: new EnumType("_3_0"),
+               },
+            },
+         },
+         docs: {
+            id: true,
+            slug: true,
+            name: true,
+            number: true,
+            icon: {
+               url: true,
+            },
+            type: {
+               name: true,
+               slug: true,
+               icon: {
+                  url: true,
+               },
+            },
+         },
+      },
+      tier6: {
+         __aliasFor: "allPokemon",
+         __args: {
+            limit: 200,
+            sort: "name",
+            where: {
                OR: [
                   {
                      ratings__ultraLeagueRating: {
-                        equals: new EnumType("_1_5"),
+                        equals: new EnumType("_2_5"),
                      },
                   },
                   {
                      ratings__ultraLeagueRating: {
-                        equals: new EnumType("_1_0"),
+                        equals: new EnumType("_2_0"),
                      },
                   },
                ],
