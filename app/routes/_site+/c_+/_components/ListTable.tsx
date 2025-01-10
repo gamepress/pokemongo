@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useEffect } from "react";
 
 import {
    useReactTable,
@@ -44,6 +44,7 @@ export function ListTable({
    globalFilterFn,
    stickyFooter = false,
    hideViewMode = false,
+   defaultFilters,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[] | any;
@@ -61,6 +62,7 @@ export function ListTable({
    globalFilterFn?: FilterFn<any>;
    stickyFooter?: boolean;
    hideViewMode?: boolean;
+   defaultFilters?: ColumnFiltersState;
 }) {
    const FilterContext = useContext(TableFilterContext);
 
@@ -79,6 +81,7 @@ export function ListTable({
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
       columnViewability ?? {},
    );
+
    const [pagination, setPagination] = useState<PaginationState>({
       pageIndex: 0,
       pageSize: pageSize,
@@ -113,6 +116,14 @@ export function ListTable({
       onColumnVisibilityChange: setColumnVisibility,
       globalFilterFn: globalFilterFn ?? fuzzyFilter,
    });
+
+   useEffect(() => {
+      setColumnFilters(defaultFilters ?? []);
+   }, [defaultFilters]);
+
+   useEffect(() => {
+      setColumnVisibility(columnViewability ?? {});
+   }, [columnViewability]);
 
    return (
       <>
