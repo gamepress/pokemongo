@@ -804,6 +804,10 @@ export const Pokemon: CollectionConfig = {
                value: "_10",
             },
             {
+               label: "12 KM",
+               value: "_12",
+            },
+            {
                label: "20 KM",
                value: "_20",
             },
