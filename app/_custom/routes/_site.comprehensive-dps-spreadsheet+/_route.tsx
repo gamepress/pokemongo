@@ -141,12 +141,6 @@ export async function clientLoader({
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
-   // console.log(filtered);
-
-   // console.log(pokemon);
-
-   // console.log(simpleCache);
-
    return {
       pokemon,
       results: filtered,

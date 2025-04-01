@@ -849,9 +849,9 @@ export function generateSpreadsheet(pokemonCollection, Context) {
       }
    }
 
-   if (EasterEggActiviated) {
-      applyEasterEgg(Table);
-   }
+   // if (EasterEggActiviated) {
+   //    applyEasterEgg(Table);
+   // }
 
    t2 = Date.now();
    console.log("Primary Calculation took", t2 - t1, "ms");
